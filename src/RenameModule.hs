@@ -33,6 +33,7 @@ renameWith move src dst = do
 
 renameModuleWith :: (FilePath -> FilePath -> IO ()) -> FilePath -> FilePath -> IO ()
 renameModuleWith move src dst = do
+  createDirectoryIfMissing True (takeDirectory dst)
   move src dst
   readFile dst >>= writeFile dst . renameModule (moduleName src) (moduleName dst)
 
