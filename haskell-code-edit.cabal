@@ -1,0 +1,49 @@
+-- This file has been generated from package.yaml by hpack version 0.17.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           haskell-code-edit
+version:        0.0.0
+author:         Simon Hengel <sol@typeful.net>
+maintainer:     Simon Hengel <sol@typeful.net>
+copyright:      (c) 2015 Simon Hengel
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+executable haskell-rename-module
+  main-is: haskell-rename-module.hs
+  hs-source-dirs:
+      src
+      driver
+  ghc-options: -Wall
+  build-depends:
+      base == 4.*
+    , filepath
+    , directory
+    , process
+    , strict
+  other-modules:
+      RenameModule
+  default-language: Haskell2010
+
+test-suite spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      src
+      test
+  ghc-options: -Wall
+  build-depends:
+      base == 4.*
+    , filepath
+    , directory
+    , process
+    , strict
+    , hspec == 2.*
+    , mockery
+  other-modules:
+      RenameModule
+      RenameModuleSpec
+  default-language: Haskell2010

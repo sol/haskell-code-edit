@@ -1,0 +1,31 @@
+name: haskell-code-edit
+
+license: MIT
+copyright: (c) 2015 Simon Hengel
+author: Simon Hengel <sol@typeful.net>
+maintainer: Simon Hengel <sol@typeful.net>
+
+ghc-options: -Wall
+
+dependencies:
+  - base == 4.*
+  - filepath
+  - directory
+  - process
+  - strict
+
+source-dirs: src
+
+executables:
+  haskell-rename-module:
+    source-dirs: driver
+    main: haskell-rename-module.hs
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - test
+    dependencies:
+      - hspec == 2.*
+      - mockery
