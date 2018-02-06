@@ -25,7 +25,11 @@ gitRename = renameWith gitMove
     gitMove src dst = callProcess "git" ["mv", src, dst]
 
 renameWith :: (FilePath -> FilePath -> IO ()) -> FilePath -> FilePath -> IO ()
-renameWith move src dst = do
+renameWith move src dstDirOrFile = do
+  isDir <- doesDirectoryExist dstDirOrFile
+  dst <- if isDir
+    then return (dstDirOrFile </> takeFileName src)
+    else return dstDirOrFile
   renameModuleWith move src dst
   hasSpec <- doesFileExist $ specFile src
   when hasSpec $ do

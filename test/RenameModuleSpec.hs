@@ -5,27 +5,9 @@ import           Test.Mockery.Directory
 
 import           RenameModule
 
-foo :: String
-foo = unlines [
-    "module Foo where"
-  , "fib n = .."
-  ]
-
-fooSpec :: String
-fooSpec = unlines [
-    "module FooSpec where"
-  , "fib n = .."
-  ]
-
-bar :: String
-bar = unlines [
-    "module Bar where"
-  , "fib n = .."
-  ]
-
-barSpec :: String
-barSpec = unlines [
-    "module BarSpec where"
+moduleNamed :: String -> String
+moduleNamed name = unlines [
+    "module " ++ name ++ " where"
   , "fib n = .."
   ]
 
@@ -34,22 +16,27 @@ spec = do
   describe "rename" $ around_ inTempDirectory $ do
     before_ ( do
       touch "src/Foo.hs"
-      writeFile "src/Foo.hs" foo
+      writeFile "src/Foo.hs" (moduleNamed "Foo")
       ) $ do
       it "renames a Haskell module" $ do
         rename "src/Foo.hs" "src/Bar.hs"
-        readFile "src/Bar.hs" `shouldReturn` bar
+        readFile "src/Bar.hs" `shouldReturn` moduleNamed "Bar"
+
+      it "moves a Haskell module to a directory" $ do
+        touch "src/Bar/.placeholder"
+        rename "src/Foo.hs" "src/Bar/"
+        readFile "src/Bar/Foo.hs" `shouldReturn` moduleNamed "Bar.Foo"
 
       context "when module has a spec" $ do
         it "renames the spec" $ do
           touch "test/FooSpec.hs"
-          writeFile "test/FooSpec.hs" fooSpec
+          writeFile "test/FooSpec.hs" (moduleNamed "FooSpec")
           rename "src/Foo.hs" "src/Bar.hs"
-          readFile "test/BarSpec.hs" `shouldReturn` barSpec
+          readFile "test/BarSpec.hs" `shouldReturn` moduleNamed "BarSpec"
 
   describe "renameModule" $ do
     it "renames a Haskell module" $ do
-      renameModule ["Foo"] ["Bar"] foo `shouldBe` bar
+      renameModule ["Foo"] ["Bar"] (moduleNamed "Foo") `shouldBe` moduleNamed "Bar"
 
   describe "specFile" $ do
     it "returns spec for a given source file" $ do
